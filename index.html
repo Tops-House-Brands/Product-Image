@@ -50,7 +50,7 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            cursor: zoom-in; /* ปรับปรุง: เพิ่ม cursor รูปแว่นขยาย */
+            cursor: zoom-in; /* เพิ่ม cursor รูปแว่นขยาย */
         }
 
         /* สไตล์พื้นฐานของแต่ละสไลด์ */
@@ -156,7 +156,7 @@
             box-shadow: none;
         }
 
-        /* ปรับปรุง: เพิ่ม CSS สำหรับ Modal Zoom */
+        /* CSS สำหรับ Modal Zoom */
         .zoom-modal {
             display: none;
             position: fixed;
@@ -214,7 +214,7 @@
         </div>
     </div>
 
-    <!-- ปรับปรุง: เพิ่ม HTML สำหรับ Modal Zoom -->
+    <!-- HTML สำหรับ Modal Zoom -->
     <div id="zoom-modal" class="zoom-modal">
         <span id="zoom-close" class="zoom-close">&times;</span>
         <img id="zoomed-image" class="zoomed-image-content">
@@ -230,7 +230,10 @@
               "ImageUrls": [
                 "https://assets.tops.co.th/SMARTER-SmarterGarbageBags36X45inches8pcs-8853474045242-1?$JPEG$",
                 "https://assets.tops.co.th/SMARTER-SmarterGarbageBags36X45inches8pcs-8853474045242-2?$JPEG$",
-                "https://assets.tops.co.th/SMARTER-SmarterGarbageBags36X45inches8pcs-8853474045242-3?$JPEG$"
+                "https://assets.tops.co.th/SMARTER-SmarterGarbageBags36X45inches8pcs-8853474045242-3?$JPEG$",
+                "https://lh5.googleusercontent.com/d/1cT6QuarExLFIhrFkFoUkD5njzs1jtti0",
+                "https://lh5.googleusercontent.com/d/1RQp2Qpljr-xAsZZOlFrajCFtWh3006YP",
+                "https://lh5.googleusercontent.com/d/1Wimu3R5_bAIAcrtOYrgVtHyIuVvfDdnT"
               ]
             };
             
@@ -240,7 +243,6 @@
             const prevButton = document.getElementById('carousel-prev');
             const nextButton = document.getElementById('carousel-next');
             
-            // ปรับปรุง: ดึง Element ของ Modal มาใช้งาน
             const zoomModal = document.getElementById('zoom-modal');
             const zoomedImage = document.getElementById('zoomed-image');
             const zoomCloseBtn = document.getElementById('zoom-close');
@@ -284,34 +286,57 @@
                 indicator.addEventListener('click', () => showSlide(parseInt(indicator.getAttribute('data-slide-to'))));
             });
 
-            // ปรับปรุง: เพิ่มฟังก์ชันสำหรับ Zoom
-            carouselWrapper.addEventListener('click', function(event) {
-                if (event.target.classList.contains('carousel-img')) {
-                    zoomModal.style.display = "block";
-                    zoomedImage.src = event.target.src;
-                }
-            });
-
+            const openModal = (src) => {
+                zoomModal.style.display = "block";
+                zoomedImage.src = src;
+            };
             const closeModal = () => zoomModal.style.display = "none";
+
             zoomCloseBtn.addEventListener('click', closeModal);
-            zoomModal.addEventListener('click', function(event) {
-                if (event.target === zoomModal) { // ปิดเมื่อคลิกที่พื้นหลังเท่านั้น
-                    closeModal();
-                }
+            zoomModal.addEventListener('click', (event) => {
+                if (event.target === zoomModal) closeModal();
             });
             
+            // --- ปรับปรุง: รวมโค้ดสำหรับ Swipe และ Tap (Zoom) ---
             let touchStartX = 0;
-            const swipeThreshold = 50;
+            let touchStartY = 0;
+            const swipeThreshold = 50; // ระยะทางขั้นต่ำสำหรับ "ปัด"
+            const tapThreshold = 10;   // ระยะทางสูงสุดสำหรับ "แตะ"
 
             carouselElement.addEventListener('touchstart', e => {
                 touchStartX = e.changedTouches[0].screenX;
+                touchStartY = e.changedTouches[0].screenY;
             }, { passive: true });
 
             carouselElement.addEventListener('touchend', e => {
                 const touchEndX = e.changedTouches[0].screenX;
-                if (touchEndX < touchStartX && touchStartX - touchEndX > swipeThreshold) nextSlide();
-                if (touchEndX > touchStartX && touchEndX - touchStartX > swipeThreshold) prevSlide();
+                const touchEndY = e.changedTouches[0].screenY;
+
+                const deltaX = Math.abs(touchEndX - touchStartX);
+                const deltaY = Math.abs(touchEndY - touchStartY);
+
+                // ตรวจสอบว่าเป็น "การแตะ" (เคลื่อนที่น้อยมาก)
+                if (deltaX < tapThreshold && deltaY < tapThreshold) {
+                    if (e.target.classList.contains('carousel-img')) {
+                        openModal(e.target.src);
+                    }
+                } 
+                // ตรวจสอบว่าเป็น "การปัด" ในแนวนอน
+                else if (deltaX > swipeThreshold && deltaY < swipeThreshold) {
+                    if (touchEndX < touchStartX) {
+                        nextSlide();
+                    } else {
+                        prevSlide();
+                    }
+                }
             }, { passive: true });
+            
+            // เพิ่ม Event Listener สำหรับ 'click' บน PC เพื่อให้ยังทำงานได้
+            carouselWrapper.addEventListener('click', function(event) {
+                if (event.target.classList.contains('carousel-img')) {
+                    openModal(event.target.src);
+                }
+            });
         });
     </script>
 </body>
