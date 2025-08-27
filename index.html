@@ -23,7 +23,7 @@
 
         /* Container หลักของ Carousel */
         .carousel-container {
-            max-width: 600px;
+            max-width: 800px; /* ปรับปรุง: เพิ่มขนาดสำหรับ PC */
             width: 100%;
             background-color: white;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -119,6 +119,11 @@
             height: 1rem;
             color: white;
         }
+        
+        /* ปรับปรุง: เอาแถบสีเทา (focus outline) ออกเมื่อคลิก */
+        .carousel-control:focus {
+            outline: none;
+        }
 
         /* ตัวบ่งชี้สไลด์ (ปุ่มจุด) */
         .carousel-indicators {
@@ -141,6 +146,11 @@
         }
         .indicator-button[aria-current="true"] {
             background-color: #6b7280; /* สีเทาเข้ม */
+        }
+
+        /* ปรับปรุง: เอาแถบสีเทา (focus outline) ออกเมื่อคลิก */
+        .indicator-button:focus {
+            outline: none;
         }
         /* --- จบส่วนของ CSS --- */
     </style>
