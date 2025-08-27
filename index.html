@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Image Carousel</title>
+    <title>Product Image</title>
 
     <style>
         /* --- เริ่มส่วนของ CSS --- */
@@ -23,7 +23,7 @@
 
         /* Container หลักของ Carousel */
         .carousel-container {
-            max-width: 800px; /* ปรับปรุง: เพิ่มขนาดสำหรับ PC */
+            /* max-width: 800px; ปรับปรุง: เพิ่มขนาดสำหรับ PC */
             width: 100%;
             background-color: white;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -97,6 +97,7 @@
             cursor: pointer;
             border: none;
             background: none;
+            -webkit-tap-highlight-color: transparent; /* ปรับปรุง: ลบ highlight บน mobile */
         }
         .carousel-control.prev { left: 0; }
         .carousel-control.next { right: 0; }
@@ -120,9 +121,10 @@
             color: white;
         }
         
-        /* ปรับปรุง: เอาแถบสีเทา (focus outline) ออกเมื่อคลิก */
-        .carousel-control:focus {
+        /* ปรับปรุง: เอาแถบสีเทา (focus outline) ออกเมื่อคลิกให้ครอบคลุมขึ้น */
+        .carousel-control:focus, .carousel-control:focus-visible {
             outline: none;
+            box-shadow: none;
         }
 
         /* ตัวบ่งชี้สไลด์ (ปุ่มจุด) */
@@ -143,14 +145,16 @@
             cursor: pointer;
             padding: 0;
             transition: background-color 0.2s;
+            -webkit-tap-highlight-color: transparent; /* ปรับปรุง: ลบ highlight บน mobile */
         }
         .indicator-button[aria-current="true"] {
             background-color: #6b7280; /* สีเทาเข้ม */
         }
 
-        /* ปรับปรุง: เอาแถบสีเทา (focus outline) ออกเมื่อคลิก */
-        .indicator-button:focus {
+        /* ปรับปรุง: เอาแถบสีเทา (focus outline) ออกเมื่อคลิกให้ครอบคลุมขึ้น */
+        .indicator-button:focus, .indicator-button:focus-visible {
             outline: none;
+            box-shadow: none;
         }
         /* --- จบส่วนของ CSS --- */
     </style>
