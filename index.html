@@ -23,7 +23,7 @@
 
         /* Container หลักของ Carousel */
         .carousel-container {
-            /* max-width: 800px; ปรับปรุง: เพิ่มขนาดสำหรับ PC */
+            max-width: 800px;
             width: 100%;
             background-color: white;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -37,7 +37,7 @@
             position: relative;
             overflow: hidden;
             border-radius: 0.5rem;
-            aspect-ratio: 1 / 1; /* ทำให้เป็นสี่เหลี่ยมจัตุรัสเสมอ */
+            aspect-ratio: 1 / 1;
         }
 
         .carousel-wrapper {
@@ -50,6 +50,7 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
+            cursor: zoom-in; /* ปรับปรุง: เพิ่ม cursor รูปแว่นขยาย */
         }
 
         /* สไตล์พื้นฐานของแต่ละสไลด์ */
@@ -59,7 +60,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            display: none; /* ซ่อนไว้เป็นค่าเริ่มต้น */
+            display: none;
         }
         
         /* สไตล์สำหรับ Fade Transition */
@@ -97,7 +98,7 @@
             cursor: pointer;
             border: none;
             background: none;
-            -webkit-tap-highlight-color: transparent; /* ปรับปรุง: ลบ highlight บน mobile */
+            -webkit-tap-highlight-color: transparent;
         }
         .carousel-control.prev { left: 0; }
         .carousel-control.next { right: 0; }
@@ -121,7 +122,6 @@
             color: white;
         }
         
-        /* ปรับปรุง: เอาแถบสีเทา (focus outline) ออกเมื่อคลิกให้ครอบคลุมขึ้น */
         .carousel-control:focus, .carousel-control:focus-visible {
             outline: none;
             box-shadow: none;
@@ -140,21 +140,56 @@
             width: 0.75rem;
             height: 0.75rem;
             border-radius: 50%;
-            background-color: #d1d5db; /* สีเทาอ่อน */
+            background-color: #d1d5db;
             border: none;
             cursor: pointer;
             padding: 0;
             transition: background-color 0.2s;
-            -webkit-tap-highlight-color: transparent; /* ปรับปรุง: ลบ highlight บน mobile */
+            -webkit-tap-highlight-color: transparent;
         }
         .indicator-button[aria-current="true"] {
-            background-color: #6b7280; /* สีเทาเข้ม */
+            background-color: #6b7280;
         }
 
-        /* ปรับปรุง: เอาแถบสีเทา (focus outline) ออกเมื่อคลิกให้ครอบคลุมขึ้น */
         .indicator-button:focus, .indicator-button:focus-visible {
             outline: none;
             box-shadow: none;
+        }
+
+        /* ปรับปรุง: เพิ่ม CSS สำหรับ Modal Zoom */
+        .zoom-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            padding-top: 2rem;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.9);
+            cursor: zoom-out;
+        }
+        .zoomed-image-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90vh;
+        }
+        .zoom-close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .zoom-close:hover,
+        .zoom-close:focus {
+            color: #bbb;
+            text-decoration: none;
         }
         /* --- จบส่วนของ CSS --- */
     </style>
@@ -164,39 +199,33 @@
     <!-- Container หลักของ Carousel -->
     <div class="carousel-container">
         <div id="image-carousel" class="carousel-viewport">
-            <!-- Wrapper สำหรับรูปภาพ (จะถูกสร้างโดย JavaScript) -->
             <div id="carousel-wrapper" class="carousel-wrapper"></div>
-
-            <!-- Wrapper สำหรับปุ่มจุด (จะถูกสร้างโดย JavaScript) -->
             <div id="carousel-indicators" class="carousel-indicators"></div>
-
-            <!-- ปุ่มควบคุม (ลูกศรซ้าย-ขวา) -->
             <button type="button" class="carousel-control prev" id="carousel-prev">
                 <span class="icon-wrapper">
-                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
-                    </svg>
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/></svg>
                 </span>
             </button>
             <button type="button" class="carousel-control next" id="carousel-next">
                 <span class="icon-wrapper">
-                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-                    </svg>
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/></svg>
                 </span>
             </button>
         </div>
+    </div>
+
+    <!-- ปรับปรุง: เพิ่ม HTML สำหรับ Modal Zoom -->
+    <div id="zoom-modal" class="zoom-modal">
+        <span id="zoom-close" class="zoom-close">&times;</span>
+        <img id="zoomed-image" class="zoomed-image-content">
     </div>
 
     <!-- JavaScript สำหรับจัดการข้อมูล JSON และการ Swipe บนมือถือ -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             
-            // --- ตั้งค่าเอฟเฟกต์การเปลี่ยนสไลด์ ---
-            // เลือกอย่างใดอย่างหนึ่ง: 'fade' หรือ 'zoom'
             const transitionType = 'fade';
 
-            // --- ส่วนนี้คือข้อมูล JSON ที่จะได้รับมาจากฟังก์ชันหรือ API ---
             const productData = {
               "ImageUrls": [
                 "https://assets.tops.co.th/SMARTER-SmarterGarbageBags36X45inches8pcs-8853474045242-1?$JPEG$",
@@ -210,6 +239,11 @@
             const carouselIndicators = document.getElementById('carousel-indicators');
             const prevButton = document.getElementById('carousel-prev');
             const nextButton = document.getElementById('carousel-next');
+            
+            // ปรับปรุง: ดึง Element ของ Modal มาใช้งาน
+            const zoomModal = document.getElementById('zoom-modal');
+            const zoomedImage = document.getElementById('zoomed-image');
+            const zoomCloseBtn = document.getElementById('zoom-close');
 
             carouselWrapper.innerHTML = '';
             carouselIndicators.innerHTML = '';
@@ -217,7 +251,6 @@
             const totalSlides = productData.ImageUrls.length;
             let currentSlide = 0;
 
-            // สร้างสไลด์และปุ่ม Indicator
             productData.ImageUrls.forEach((url, index) => {
                 const item = document.createElement('div');
                 item.className = `carousel-item ${transitionType} ${index === 0 ? 'active' : ''}`;
@@ -236,37 +269,37 @@
             const slides = document.querySelectorAll('.carousel-item');
             const indicators = document.querySelectorAll('.indicator-button');
 
-            // ฟังก์ชันสำหรับแสดงสไลด์
             const showSlide = (index) => {
-                slides.forEach((slide, i) => {
-                    slide.classList.toggle('active', i === index);
-                });
-                indicators.forEach((indicator, i) => {
-                    indicator.setAttribute('aria-current', i === index ? 'true' : 'false');
-                });
+                slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+                indicators.forEach((indicator, i) => indicator.setAttribute('aria-current', i === index ? 'true' : 'false'));
                 currentSlide = index;
             };
 
-            const prevSlide = () => {
-                const newIndex = (currentSlide - 1 + totalSlides) % totalSlides;
-                showSlide(newIndex);
-            };
-
-            const nextSlide = () => {
-                const newIndex = (currentSlide + 1) % totalSlides;
-                showSlide(newIndex);
-            };
+            const prevSlide = () => showSlide((currentSlide - 1 + totalSlides) % totalSlides);
+            const nextSlide = () => showSlide((currentSlide + 1) % totalSlides);
             
-            // กำหนด Event Listeners
             prevButton.addEventListener('click', prevSlide);
             nextButton.addEventListener('click', nextSlide);
             indicators.forEach(indicator => {
-                indicator.addEventListener('click', () => {
-                    showSlide(parseInt(indicator.getAttribute('data-slide-to')));
-                });
+                indicator.addEventListener('click', () => showSlide(parseInt(indicator.getAttribute('data-slide-to'))));
+            });
+
+            // ปรับปรุง: เพิ่มฟังก์ชันสำหรับ Zoom
+            carouselWrapper.addEventListener('click', function(event) {
+                if (event.target.classList.contains('carousel-img')) {
+                    zoomModal.style.display = "block";
+                    zoomedImage.src = event.target.src;
+                }
+            });
+
+            const closeModal = () => zoomModal.style.display = "none";
+            zoomCloseBtn.addEventListener('click', closeModal);
+            zoomModal.addEventListener('click', function(event) {
+                if (event.target === zoomModal) { // ปิดเมื่อคลิกที่พื้นหลังเท่านั้น
+                    closeModal();
+                }
             });
             
-            // --- โค้ดสำหรับเปิดใช้งานการปัดนิ้วบนมือถือ ---
             let touchStartX = 0;
             const swipeThreshold = 50;
 
@@ -276,12 +309,8 @@
 
             carouselElement.addEventListener('touchend', e => {
                 const touchEndX = e.changedTouches[0].screenX;
-                if (touchEndX < touchStartX && touchStartX - touchEndX > swipeThreshold) {
-                    nextSlide();
-                }
-                if (touchEndX > touchStartX && touchEndX - touchStartX > swipeThreshold) {
-                    prevSlide();
-                }
+                if (touchEndX < touchStartX && touchStartX - touchEndX > swipeThreshold) nextSlide();
+                if (touchEndX > touchStartX && touchEndX - touchStartX > swipeThreshold) prevSlide();
             }, { passive: true });
         });
     </script>
