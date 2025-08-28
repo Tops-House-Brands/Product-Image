@@ -38,6 +38,9 @@
             overflow: hidden;
             border-radius: 0.5rem;
             aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .carousel-wrapper {
@@ -50,7 +53,7 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            cursor: zoom-in; /* เพิ่ม cursor รูปแว่นขยาย */
+            cursor: zoom-in;
         }
 
         /* สไตล์พื้นฐานของแต่ละสไลด์ */
@@ -63,7 +66,6 @@
             display: none;
         }
         
-        /* สไตล์สำหรับ Fade Transition */
         .carousel-item.fade {
             transition: opacity 0.7s ease-in-out;
             opacity: 0;
@@ -73,7 +75,6 @@
             opacity: 1;
         }
 
-        /* สไตล์สำหรับ Zoom Transition */
         .carousel-item.zoom {
             transition: transform 0.7s ease-in-out, opacity 0.7s ease-in-out;
             opacity: 0;
@@ -167,7 +168,7 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(255, 255, 255, 0.95); /* ปรับปรุง: เปลี่ยนพื้นหลังเป็นสีขาวโปร่งแสง */
+            background-color: rgba(255, 255, 255, 0.95);
             cursor: zoom-out;
         }
         .zoomed-image-content {
@@ -180,7 +181,7 @@
             position: absolute;
             top: 15px;
             right: 35px;
-            color: #333; /* ปรับปรุง: เปลี่ยนสีปุ่มปิดเป็นสีเข้ม */
+            color: #333;
             font-size: 40px;
             font-weight: bold;
             transition: 0.3s;
@@ -188,8 +189,22 @@
         }
         .zoom-close:hover,
         .zoom-close:focus {
-            color: #000; /* ปรับปรุง: เปลี่ยนสีปุ่มปิดตอน hover */
+            color: #000;
             text-decoration: none;
+        }
+
+        /* CSS สำหรับ Loading Spinner */
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 5px solid #6b7280;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         /* --- จบส่วนของ CSS --- */
     </style>
@@ -199,16 +214,22 @@
     <!-- Container หลักของ Carousel -->
     <div class="carousel-container">
         <div id="image-carousel" class="carousel-viewport">
-            <div id="carousel-wrapper" class="carousel-wrapper"></div>
+            <div id="loader" class="loader"></div>
+            <div id="carousel-wrapper" class="carousel-wrapper" style="display: none;"></div>
             <div id="carousel-indicators" class="carousel-indicators"></div>
-            <button type="button" class="carousel-control prev" id="carousel-prev">
+            <!-- FIX: Added the span and svg for the control buttons back -->
+            <button type="button" class="carousel-control prev" id="carousel-prev" style="display: none;">
                 <span class="icon-wrapper">
-                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/></svg>
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+                    </svg>
                 </span>
             </button>
-            <button type="button" class="carousel-control next" id="carousel-next">
+            <button type="button" class="carousel-control next" id="carousel-next" style="display: none;">
                 <span class="icon-wrapper">
-                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/></svg>
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                    </svg>
                 </span>
             </button>
         </div>
@@ -220,36 +241,53 @@
         <img id="zoomed-image" class="zoomed-image-content">
     </div>
 
-    <!-- JavaScript สำหรับจัดการข้อมูล JSON และการ Swipe บนมือถือ -->
+    <!-- JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', async function () {
             
             const transitionType = 'fade';
-
-            const productData = {
-              "ImageUrls": [
-                "https://assets.tops.co.th/SMARTER-SmarterGarbageBags36X45inches8pcs-8853474045242-1?$JPEG$",
-                "https://assets.tops.co.th/SMARTER-SmarterGarbageBags36X45inches8pcs-8853474045242-2?$JPEG$",
-                "https://assets.tops.co.th/SMARTER-SmarterGarbageBags36X45inches8pcs-8853474045242-3?$JPEG$",
-                "https://lh5.googleusercontent.com/d/1cT6QuarExLFIhrFkFoUkD5njzs1jtti0",
-                "https://lh5.googleusercontent.com/d/1RQp2Qpljr-xAsZZOlFrajCFtWh3006YP",
-                "https://lh5.googleusercontent.com/d/1Wimu3R5_bAIAcrtOYrgVtHyIuVvfDdnT"
-              ]
-            };
             
+            function getBarcodeFromURL() {
+                const params = new URLSearchParams(window.location.search);
+                return params.get('barcode') || '8853474014996'; // ใส่ค่า Default ไว้เผื่อไม่มี
+            }
+
+            async function fetchProductData(barcode) {
+                const url = `https://script.google.com/macros/s/AKfycbzJ5B7ADNuHOxMSU1Ued4IIuPQl1EWqnBjyzY0C11T7RAFAqjYp2SbJHuRbnW0CCGjz/exec?barcode=${barcode}`;
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return await response.json();
+                } catch (error) {
+                    console.error("Could not fetch product data:", error);
+                    return { ImageUrls: [] };
+                }
+            }
+
+            const loader = document.getElementById('loader');
             const carouselElement = document.getElementById('image-carousel');
             const carouselWrapper = document.getElementById('carousel-wrapper');
             const carouselIndicators = document.getElementById('carousel-indicators');
             const prevButton = document.getElementById('carousel-prev');
             const nextButton = document.getElementById('carousel-next');
-            
             const zoomModal = document.getElementById('zoom-modal');
             const zoomedImage = document.getElementById('zoomed-image');
             const zoomCloseBtn = document.getElementById('zoom-close');
 
-            carouselWrapper.innerHTML = '';
-            carouselIndicators.innerHTML = '';
-            
+            const barcode = getBarcodeFromURL();
+            const productData = await fetchProductData(barcode);
+
+            loader.style.display = 'none';
+
+            if (!productData.ImageUrls || productData.ImageUrls.length === 0) {
+                carouselElement.innerHTML = '<p style="text-align: center; color: #6b7280;">ไม่พบรูปภาพ</p>';
+                return;
+            }
+
+            carouselWrapper.style.display = 'block';
+            prevButton.style.display = 'flex';
+            nextButton.style.display = 'flex';
+
             const totalSlides = productData.ImageUrls.length;
             let currentSlide = 0;
 
@@ -297,11 +335,8 @@
                 if (event.target === zoomModal) closeModal();
             });
             
-            // --- ปรับปรุง: รวมโค้ดสำหรับ Swipe และ Tap (Zoom) ---
-            let touchStartX = 0;
-            let touchStartY = 0;
-            const swipeThreshold = 50; // ระยะทางขั้นต่ำสำหรับ "ปัด"
-            const tapThreshold = 10;   // ระยะทางสูงสุดสำหรับ "แตะ"
+            let touchStartX = 0, touchStartY = 0;
+            const swipeThreshold = 50, tapThreshold = 10;
 
             carouselElement.addEventListener('touchstart', e => {
                 touchStartX = e.changedTouches[0].screenX;
@@ -311,28 +346,25 @@
             carouselElement.addEventListener('touchend', e => {
                 const touchEndX = e.changedTouches[0].screenX;
                 const touchEndY = e.changedTouches[0].screenY;
-
                 const deltaX = Math.abs(touchEndX - touchStartX);
                 const deltaY = Math.abs(touchEndY - touchStartY);
 
-                // ตรวจสอบว่าเป็น "การแตะ" (เคลื่อนที่น้อยมาก)
                 if (deltaX < tapThreshold && deltaY < tapThreshold) {
                     if (e.target.classList.contains('carousel-img')) {
                         openModal(e.target.src);
                     }
                 } 
-                // ตรวจสอบว่าเป็น "การปัด" ในแนวนอน
                 else if (deltaX > swipeThreshold && deltaY < swipeThreshold) {
-                    if (touchEndX < touchStartX) {
-                        nextSlide();
-                    } else {
-                        prevSlide();
-                    }
+                    if (touchEndX < touchStartX) nextSlide();
+                    else prevSlide();
                 }
             }, { passive: true });
             
-            // เพิ่ม Event Listener สำหรับ 'click' บน PC เพื่อให้ยังทำงานได้
-            carouselWrapper.addEventListener('click', function(event) {
+            let isDragging = false;
+            carouselWrapper.addEventListener('mousedown', () => isDragging = false);
+            carouselWrapper.addEventListener('mousemove', () => isDragging = true);
+            carouselWrapper.addEventListener('mouseup', function(event) {
+                if (isDragging) return;
                 if (event.target.classList.contains('carousel-img')) {
                     openModal(event.target.src);
                 }
