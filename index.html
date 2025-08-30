@@ -1,375 +1,135 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Image</title>
-
-    <style>
-        /* --- เริ่มส่วนของ CSS --- */
-        
-        /* ตั้งค่าพื้นฐานและจัดหน้าเว็บให้อยู่ตรงกลาง */
-        body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #f9fafb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 1rem;
-            box-sizing: border-box;
-        }
-
-        /* Container หลักของ Carousel */
-        .carousel-container {
-            max-width: 800px;
-            width: 100%;
-            background-color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-radius: 0.5rem;
-            padding: 1rem;
-            box-sizing: border-box;
-        }
-
-        /* กรอบแสดงรูปภาพ */
-        .carousel-viewport {
-            position: relative;
-            overflow: hidden;
-            border-radius: 0.5rem;
-            aspect-ratio: 1 / 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .carousel-wrapper {
-            width: 100%;
-            height: 100%;
-        }
-        
-        /* สไตล์ของรูปภาพในสไลด์ */
-        .carousel-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            cursor: zoom-in;
-        }
-
-        /* สไตล์พื้นฐานของแต่ละสไลด์ */
-        .carousel-item {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: none;
-        }
-        
-        .carousel-item.fade {
-            transition: opacity 0.7s ease-in-out;
-            opacity: 0;
-        }
-        .carousel-item.fade.active {
-            display: block;
-            opacity: 1;
-        }
-
-        .carousel-item.zoom {
-            transition: transform 0.7s ease-in-out, opacity 0.7s ease-in-out;
-            opacity: 0;
-            transform: scale(0.95);
-        }
-        .carousel-item.zoom.active {
-            display: block;
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        /* ปุ่มควบคุม (ลูกศรซ้าย-ขวา) */
-        .carousel-control {
-            position: absolute;
-            top: 0;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            padding: 0 1rem;
-            cursor: pointer;
-            border: none;
-            background: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .carousel-control.prev { left: 0; }
-        .carousel-control.next { right: 0; }
-
-        .carousel-control .icon-wrapper {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 50%;
-            background-color: rgba(0, 0, 0, 0.2);
-            transition: background-color 0.2s;
-        }
-        .carousel-control:hover .icon-wrapper {
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-        .carousel-control svg {
-            width: 1rem;
-            height: 1rem;
-            color: white;
-        }
-        
-        .carousel-control:focus, .carousel-control:focus-visible {
-            outline: none;
-            box-shadow: none;
-        }
-
-        /* ตัวบ่งชี้สไลด์ (ปุ่มจุด) */
-        .carousel-indicators {
-            position: absolute;
-            bottom: 1.25rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 0.75rem;
-        }
-        .indicator-button {
-            width: 0.75rem;
-            height: 0.75rem;
-            border-radius: 50%;
-            background-color: #d1d5db;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            transition: background-color 0.2s;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .indicator-button[aria-current="true"] {
-            background-color: #6b7280;
-        }
-
-        .indicator-button:focus, .indicator-button:focus-visible {
-            outline: none;
-            box-shadow: none;
-        }
-
-        /* CSS สำหรับ Modal Zoom */
-        .zoom-modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            padding-top: 2rem;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(255, 255, 255, 0.95);
-            cursor: zoom-out;
-        }
-        .zoomed-image-content {
-            margin: auto;
-            display: block;
-            max-width: 90%;
-            max-height: 90vh;
-        }
-        .zoom-close {
-            position: absolute;
-            top: 15px;
-            right: 35px;
-            color: #333;
-            font-size: 40px;
-            font-weight: bold;
-            transition: 0.3s;
-            cursor: pointer;
-        }
-        .zoom-close:hover,
-        .zoom-close:focus {
-            color: #000;
-            text-decoration: none;
-        }
-
-        /* CSS สำหรับ Loading Spinner */
-        .loader {
-            border: 5px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 5px solid #6b7280;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        /* --- จบส่วนของ CSS --- */
-    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <title>Verify User</title>
 </head>
 <body>
-
-    <!-- Container หลักของ Carousel -->
-    <div class="carousel-container">
-        <div id="image-carousel" class="carousel-viewport">
-            <div id="loader" class="loader"></div>
-            <div id="carousel-wrapper" class="carousel-wrapper" style="display: none;"></div>
-            <div id="carousel-indicators" class="carousel-indicators"></div>
-            <!-- FIX: Added the span and svg for the control buttons back -->
-            <button type="button" class="carousel-control prev" id="carousel-prev" style="display: none;">
-                <span class="icon-wrapper">
-                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
-                    </svg>
-                </span>
-            </button>
-            <button type="button" class="carousel-control next" id="carousel-next" style="display: none;">
-                <span class="icon-wrapper">
-                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-                    </svg>
-                </span>
-            </button>
+    <div id="loading-spinner" class="fixed inset-0 z-10 flex items-center justify-center bg-white">
+        <div class="relative flex justify-center items-center">
+            <img id="status-image" src="https://lh5.googleusercontent.com/d/1ei4Ylj32g5QEFOanStFh37da2W0FWgg4" class="w-48 h-48" alt="Loading..." />
         </div>
     </div>
 
-    <!-- HTML สำหรับ Modal Zoom -->
-    <div id="zoom-modal" class="zoom-modal">
-        <span id="zoom-close" class="zoom-close">&times;</span>
-        <img id="zoomed-image" class="zoomed-image-content">
-    </div>
-
-    <!-- JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', async function () {
-            
-            const transitionType = 'fade';
-            
-            function getBarcodeFromURL() {
-                const params = new URLSearchParams(window.location.search);
-                return params.get('barcode') || '8853474014996'; // ใส่ค่า Default ไว้เผื่อไม่มี
-            }
+        // --- ค่าคงที่: ทำให้ง่ายต่อการแก้ไขในอนาคต ---
+        const LIFF_ID = '2007107416-MlWjQ44e';
+        const GOOGLE_SHEET_URL = 'https://sheets.googleapis.com/v4/spreadsheets/1DfOrq6ronxmBIa6ImWdvhG5D9Q0wKkk5cAc6eXGHnzk/values/User_Control?alt=json&key=AIzaSyDQM3acD-wSUNh0uYb9vZiRgY70GHvTjHw';
+        
+        // --- รูปภาพสำหรับสถานะต่างๆ ---
+        const IMAGE_LOADING = 'https://lh5.googleusercontent.com/d/1ei4Ylj32g5QEFOanStFh37da2W0FWgg4';
+        const IMAGE_UNAUTHORIZED = 'https://lh5.googleusercontent.com/d/1zoHmtjKLxB8EpfPb708f-eUHEDyg8g1T';
 
-            async function fetchProductData(barcode) {
-                const url = `https://script.google.com/macros/s/AKfycbzJ5B7ADNuHOxMSU1Ued4IIuPQl1EWqnBjyzY0C11T7RAFAqjYp2SbJHuRbnW0CCGjz/exec?barcode=${barcode}`;
-                try {
-                    const response = await fetch(url);
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    return await response.json();
-                } catch (error) {
-                    console.error("Could not fetch product data:", error);
-                    return { ImageUrls: [] };
+        /**
+         * ตรวจสอบสิทธิ์ผู้ใช้จาก Google Sheet
+         * @param {string} userId - ไอดีผู้ใช้จาก LINE
+         * @returns {Promise<boolean>} - คืนค่า true หากมีสิทธิ์, มิฉะนั้น false
+         */
+        async function verifyUser(userId) {
+            try {
+                const response = await fetch(GOOGLE_SHEET_URL);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-            }
+                const data = await response.json();
+                const values = data.values;
 
-            const loader = document.getElementById('loader');
-            const carouselElement = document.getElementById('image-carousel');
-            const carouselWrapper = document.getElementById('carousel-wrapper');
-            const carouselIndicators = document.getElementById('carousel-indicators');
-            const prevButton = document.getElementById('carousel-prev');
-            const nextButton = document.getElementById('carousel-next');
-            const zoomModal = document.getElementById('zoom-modal');
-            const zoomedImage = document.getElementById('zoomed-image');
-            const zoomCloseBtn = document.getElementById('zoom-close');
+                if (!values || values.length < 2) {
+                    console.warn("No user data found in the sheet.");
+                    return false;
+                }
 
-            const barcode = getBarcodeFromURL();
-            const productData = await fetchProductData(barcode);
-
-            loader.style.display = 'none';
-
-            if (!productData.ImageUrls || productData.ImageUrls.length === 0) {
-                carouselElement.innerHTML = '<p style="text-align: center; color: #6b7280;">ไม่พบรูปภาพ</p>';
-                return;
-            }
-
-            carouselWrapper.style.display = 'block';
-            prevButton.style.display = 'flex';
-            nextButton.style.display = 'flex';
-
-            const totalSlides = productData.ImageUrls.length;
-            let currentSlide = 0;
-
-            productData.ImageUrls.forEach((url, index) => {
-                const item = document.createElement('div');
-                item.className = `carousel-item ${transitionType} ${index === 0 ? 'active' : ''}`;
-                item.innerHTML = `<img src="${url}" class="carousel-img" alt="รูปสินค้า ${index + 1}">`;
-                carouselWrapper.appendChild(item);
-
-                const indicator = document.createElement('button');
-                indicator.type = 'button';
-                indicator.className = 'indicator-button';
-                indicator.setAttribute('aria-label', `สไลด์ ${index + 1}`);
-                indicator.setAttribute('data-slide-to', index);
-                indicator.setAttribute('aria-current', index === 0 ? 'true' : 'false');
-                carouselIndicators.appendChild(indicator);
-            });
-
-            const slides = document.querySelectorAll('.carousel-item');
-            const indicators = document.querySelectorAll('.indicator-button');
-
-            const showSlide = (index) => {
-                slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
-                indicators.forEach((indicator, i) => indicator.setAttribute('aria-current', i === index ? 'true' : 'false'));
-                currentSlide = index;
-            };
-
-            const prevSlide = () => showSlide((currentSlide - 1 + totalSlides) % totalSlides);
-            const nextSlide = () => showSlide((currentSlide + 1) % totalSlides);
-            
-            prevButton.addEventListener('click', prevSlide);
-            nextButton.addEventListener('click', nextSlide);
-            indicators.forEach(indicator => {
-                indicator.addEventListener('click', () => showSlide(parseInt(indicator.getAttribute('data-slide-to'))));
-            });
-
-            const openModal = (src) => {
-                zoomModal.style.display = "block";
-                zoomedImage.src = src;
-            };
-            const closeModal = () => zoomModal.style.display = "none";
-
-            zoomCloseBtn.addEventListener('click', closeModal);
-            zoomModal.addEventListener('click', (event) => {
-                if (event.target === zoomModal) closeModal();
-            });
-            
-            let touchStartX = 0, touchStartY = 0;
-            const swipeThreshold = 50, tapThreshold = 10;
-
-            carouselElement.addEventListener('touchstart', e => {
-                touchStartX = e.changedTouches[0].screenX;
-                touchStartY = e.changedTouches[0].screenY;
-            }, { passive: true });
-
-            carouselElement.addEventListener('touchend', e => {
-                const touchEndX = e.changedTouches[0].screenX;
-                const touchEndY = e.changedTouches[0].screenY;
-                const deltaX = Math.abs(touchEndX - touchStartX);
-                const deltaY = Math.abs(touchEndY - touchStartY);
-
-                if (deltaX < tapThreshold && deltaY < tapThreshold) {
-                    if (e.target.classList.contains('carousel-img')) {
-                        openModal(e.target.src);
+                // **จุดปรับปรุงหลัก:**
+                // สร้าง Map เพื่อเก็บข้อมูลผู้ใช้ ทำให้ค้นหาได้เร็วกว่าการวนลูปมาก (O(1) vs O(n))
+                // โครงสร้าง: { 'userId_1': 'Permission_1', 'userId_2': 'Permission_2', ... }
+                const userPermissions = new Map();
+                for (let i = 1; i < values.length; i++) {
+                    const row = values[i];
+                    // row[1] คือ userID, row[8] คือ Permission
+                    if (row && row[1]) {
+                        userPermissions.set(row[1], row[8]);
                     }
-                } 
-                else if (deltaX > swipeThreshold && deltaY < swipeThreshold) {
-                    if (touchEndX < touchStartX) nextSlide();
-                    else prevSlide();
                 }
-            }, { passive: true });
-            
-            let isDragging = false;
-            carouselWrapper.addEventListener('mousedown', () => isDragging = false);
-            carouselWrapper.addEventListener('mousemove', () => isDragging = true);
-            carouselWrapper.addEventListener('mouseup', function(event) {
-                if (isDragging) return;
-                if (event.target.classList.contains('carousel-img')) {
-                    openModal(event.target.src);
+
+                // ค้นหาสิทธิ์ของผู้ใช้จาก Map ได้ทันที
+                const permission = userPermissions.get(userId);
+                return permission === "Access";
+
+            } catch (error) {
+                console.error("Error fetching or processing user data:", error);
+                return false; // กรณีเกิดข้อผิดพลาด ให้ถือว่าไม่มีสิทธิ์
+            }
+        }
+
+        /**
+         * แสดงผลเมื่อไม่ได้รับอนุญาต
+         */
+        function handleUnauthorizedAccess() {
+            const img = document.getElementById("status-image");
+            img.src = IMAGE_UNAUTHORIZED;
+            img.classList.remove("w-48", "h-48");
+            img.classList.add("w-64", "h-auto"); // ปรับขนาดให้เหมาะสม
+
+            setTimeout(() => {
+                liff.closeWindow();
+            }, 3000); // 3 วินาที
+        }
+        
+        /**
+         * ฟังก์ชันหลักในการทำงานของ LIFF App
+         */
+        async function main() {
+            try {
+                await liff.init({ liffId: LIFF_ID });
+
+                if (!liff.isLoggedIn()) {
+                    const destinationUrl = window.location.href;
+                    liff.login({ redirectUri: destinationUrl });
+                    return; // หยุดการทำงานหลังจากสั่ง login
                 }
-            });
-        });
+
+                const profile = await liff.getProfile();
+                const isAuthorized = await verifyUser(profile.userId);
+
+                if (isAuthorized) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const request = urlParams.get('request');
+
+                    let redirectUrl = '';
+
+                    switch (request) {
+                        case "ProductImageUpload":
+                            redirectUrl = `https://topster-merchandise.github.io/product-image-upload/?userId=${profile.userId}`;
+                            break;
+                        case "FindProduct":
+                            redirectUrl = `https://liff.line.me/2007107416-3rabVAAg`;
+                            break;
+                        default:
+                            console.warn(`Unknown request type: ${request}`);
+                            // อาจจะ redirect ไปหน้าหลักหรือแสดงข้อความผิดพลาด
+                            handleUnauthorizedAccess();
+                            return;
+                    }
+                    
+                    // **จุดปรับปรุง:**
+                    // ลบ setTimeout ที่ไม่จำเป็นออก เพื่อให้ redirect ทันทีที่ตรวจสอบสิทธิ์ผ่าน
+                    // ทำให้ผู้ใช้รู้สึกว่าแอปตอบสนองเร็วขึ้น
+                    window.location.replace(redirectUrl);
+
+                } else {
+                    handleUnauthorizedAccess();
+                }
+            } catch (error) {
+                console.error("LIFF Main Error:", error);
+                handleUnauthorizedAccess(); // กรณีเกิดข้อผิดพลาดในการทำงานหลัก
+            }
+        }
+
+        // เริ่มการทำงาน
+        main();
     </script>
 </body>
 </html>
