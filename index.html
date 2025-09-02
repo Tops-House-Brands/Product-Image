@@ -15,12 +15,23 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: #ff3d1a;
             display: flex;
+            flex-direction: column; /* จัดเรียงองค์ประกอบในแนวตั้ง */
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             padding: 1rem;
             box-sizing: border-box;
         }
+
+        /* --- CSS สำหรับโลโก้ --- */
+
+        .logo {
+            max-width: 400px;
+            /* ปรับขนาดของโลโก้ตามที่ต้องการ */
+            height: auto; /* Maintain aspect ratio */
+        }
+        /* --- จบส่วนของ CSS โลโก้ --- */
+
 
         /* Container หลักของ Carousel */
         .carousel-container {
@@ -210,7 +221,16 @@
         /* --- จบส่วนของ CSS --- */
     </style>
 </head>
+
 <body>
+    <!-- HTML สำหรับโลโก้ -->
+    <div class="logo-container">
+        <img
+            src="https://lh5.googleusercontent.com/d/1wKrl9FgHWwfMgL_qwztgXa1ZrCDd1UR5"
+            alt="Your Logo"
+            class="logo"
+        />
+    </div>
 
     <!-- Container หลักของ Carousel -->
     <div class="carousel-container">
@@ -218,7 +238,6 @@
             <div id="loader" class="loader"></div>
             <div id="carousel-wrapper" class="carousel-wrapper" style="display: none;"></div>
             <div id="carousel-indicators" class="carousel-indicators"></div>
-            <!-- FIX: Added the span and svg for the control buttons back -->
             <button type="button" class="carousel-control prev" id="carousel-prev" style="display: none;">
                 <span class="icon-wrapper">
                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
