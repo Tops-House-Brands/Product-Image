@@ -8,22 +8,36 @@
 
     <style>
         /* --- เริ่มส่วนของ CSS --- */
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden; /* ป้องกันการ scroll ในแนวตั้ง */
+        }
         
         /* ตั้งค่าพื้นฐานและจัดหน้าเว็บให้อยู่ตรงกลาง */
         body {
-            margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: #ff3d1a;
             display: flex;
             flex-direction: column; /* จัดเรียงองค์ประกอบในแนวตั้ง */
             align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+            /* justify-content: center; <-- เอาออกเพื่อให้ขยายเต็มจอ */
             padding: 1rem;
             box-sizing: border-box;
         }
 
         /* --- CSS สำหรับโลโก้ --- */
+        .logo-container {
+             /* * หมายเหตุ: การปรับแก้เรื่องช่องว่างใต้โลโก้ (ข้อ 1)
+              * ผมได้ใส่ margin-bottom เป็นค่าติดลบเพื่อดึงกล่องรูปภาพข้างล่างขึ้นมา
+              * ซึ่งเป็นแค่การแก้ปัญหาเฉพาะหน้าครับ
+              * * *** ทางแก้ที่ดีที่สุดคือการไปแก้ไขไฟล์รูปภาพโลโก้ ***
+              * ให้ตัดพื้นที่สีแดงว่างๆ ด้านบนและด้านล่างของคำว่า "Tops" ออก
+              * หลังจากแก้รูปแล้ว คุณอาจจะไม่ต้องใช้ margin-bottom: -2rem; นี้อีก
+             */
+            margin-top: -3rem;
+            margin-bottom: -3rem; 
+        }
 
         .logo {
             max-width: 400px;
@@ -42,6 +56,11 @@
             border-radius: 0.5rem;
             padding: 1rem;
             box-sizing: border-box;
+            /* เพิ่ม 3 บรรทัดนี้เพื่อให้ขยายเต็มพื้นที่ที่เหลือ */
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0; /* ป้องกันเนื้อหาล้นในบาง browser */
         }
 
         /* กรอบแสดงรูปภาพ */
@@ -53,6 +72,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-grow: 1; /* เพิ่มบรรทัดนี้เพื่อให้ขยายเต็มพื้นที่ container */
         }
 
         .carousel-wrapper {
